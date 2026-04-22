@@ -365,18 +365,14 @@ export interface FeaturesPageApiResponse {
 }
 
 // ===== API Service Functions =====
-const isDevelopment = import.meta.env.DEV;
-const frontendUrl = isDevelopment
-  ? "http://localhost:5173"
-  : "https://w9hunter.com";
-
-const baseApiUrl = isDevelopment
-  ? "/blogs/api/v2"
-  : "https://esign-admin.signmary.com/blogs/api/v2";
+const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";
+const frontendUrl = "https://1099automation.com";
 
 export const fetchLandingPageData = async (): Promise<LandingPageData> => {
   try {
     const apiUrl = `${baseApiUrl}/mypages/`;
+
+    console.log("🔍 Fetching from:", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -386,67 +382,32 @@ export const fetchLandingPageData = async (): Promise<LandingPageData> => {
       },
     });
 
+    console.log("📡 Response status:", response.status);
+
     if (!response.ok) {
-      console.warn("API error, using fallback data");
-      return {
-        id: 1,
-        title: "W9-Hunter",
-        meta: {
-          type: "landing.LandingPage",
-          detail_url: "",
-          html_url: null,
-          slug: "home",
-          show_in_menus: true,
-          seo_title: "W9-Hunter",
-          search_description: "",
-          first_published_at: null,
-          last_published_at: null,
-        },
-        header_section_image: null,
-      };
+      throw new Error(
+        `Failed to fetch landing page data: ${response.status} ${response.statusText}`,
+      );
     }
 
     const data: ApiResponse = await response.json();
 
+    console.log("📦 Raw API Response:", data);
+    console.log("📊 Total count:", data.meta?.total_count);
+    console.log("📋 Items length:", data.items?.length);
+
     if (!data || !data.items || data.items.length === 0) {
-      console.warn("No landing page data from API, using fallback");
-      return {
-        id: 1,
-        title: "W9-Hunter",
-        meta: {
-          type: "landing.LandingPage",
-          detail_url: "",
-          html_url: null,
-          slug: "home",
-          show_in_menus: true,
-          seo_title: "W9-Hunter",
-          search_description: "",
-          first_published_at: null,
-          last_published_at: null,
-        },
-        header_section_image: null,
-      };
+      throw new Error("No landing page data available");
     }
+
+    console.log("✅ Returning first item:", data.items[0]);
+    console.log("🎨 Features:", data.items[0].features);
+    console.log("🎯 Benefits:", data.items[0].benefits);
 
     return data.items[0];
   } catch (error) {
-    console.error("Error fetching landing page data:", error);
-    return {
-      id: 1,
-      title: "W9-Hunter",
-      meta: {
-        type: "landing.LandingPage",
-        detail_url: "",
-        html_url: null,
-        slug: "home",
-        show_in_menus: true,
-        seo_title: "W9-Hunter",
-        search_description: "",
-        first_published_at: null,
-        last_published_at: null,
-      },
-      header_section_image: null,
-    };
+    console.error("❌ Error fetching landing page data:", error);
+    throw error;
   }
 };
 
@@ -465,7 +426,7 @@ export const fetchAllFeaturesPages = async (): Promise<FeaturesPageData[]> => {
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch features pages: ${response.status} ${response.statusText}`
+        `Failed to fetch features pages: ${response.status} ${response.statusText}`,
       );
     }
 
@@ -484,7 +445,7 @@ export const fetchAllFeaturesPages = async (): Promise<FeaturesPageData[]> => {
 
 // ===== NEW: Fetch single FeaturesPage by ID or slug =====
 export const fetchFeaturesPageById = async (
-  id: number
+  id: number,
 ): Promise<FeaturesPageData> => {
   try {
     const apiUrl = `${baseApiUrl}/features-pages/${id}/`;
@@ -499,7 +460,7 @@ export const fetchFeaturesPageById = async (
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch features page: ${response.status} ${response.statusText}`
+        `Failed to fetch features page: ${response.status} ${response.statusText}`,
       );
     }
 

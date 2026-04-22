@@ -1,13 +1,7 @@
 import type { FeaturesPageData } from "../../../types/features-page";
 
-const isDevelopment = import.meta.env.DEV;
-const frontendUrl = isDevelopment
-  ? "http://localhost:5173"
-  : "http://w9chaser.com";
-
-const baseApiUrl = isDevelopment
-  ? "/blogs/api/v2"
-  : "https://esign-admin.signmary.com/blogs/api/v2";
+const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";
+const frontendUrl = "https://1099automation.com";
 
 export const fetchAllFeaturesPages = async (): Promise<FeaturesPageData[]> => {
   try {
