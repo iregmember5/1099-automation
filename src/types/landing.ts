@@ -364,7 +364,7 @@ export interface FeaturesPageApiResponse {
   items: FeaturesPageData[];
 }
 
-// ===== API Service Functions =====
+// ==== API Service Functions =====
 const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";
 const frontendUrl = "https://1099automation.com";
 
