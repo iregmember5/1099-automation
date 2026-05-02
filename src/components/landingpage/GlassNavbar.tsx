@@ -141,8 +141,8 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
       return "#cta";
     }
     
-    // Pricing navigation
-    if (title === "pricing") {
+    // Pricing or Comparison navigation
+    if (title === "pricing" || title === "comparison") {
       return "#pricing";
     }
     
