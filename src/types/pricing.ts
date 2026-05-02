@@ -19,12 +19,16 @@ export interface PricingPageData {
 }
 
 const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";
+const frontendUrl = "https://1099automation.com";
 
 export const fetchPricingPageData = async (): Promise<PricingPageData> => {
-  const hostname = window.location.hostname;
-  const response = await fetch(
-    `${baseApiUrl}/pricing-pages/?domain=${hostname}&fields=*`
-  );
+  const response = await fetch(`${baseApiUrl}/pricing-pages/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Frontend-Url": frontendUrl,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch pricing page: ${response.statusText}`);
