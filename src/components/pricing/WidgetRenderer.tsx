@@ -9,10 +9,20 @@ const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!widget.embed_code || !containerRef.current) return;
+    if (!widget.value || !containerRef.current) return;
+
+    // Parse the StructValue string to extract embed_code
+    const embedCodeMatch = widget.value.match(/'embed_code':\s*"([^"]+)"/);
+    const nameMatch = widget.value.match(/'name':\s*'([^']+)'/);
+    
+    if (!embedCodeMatch) return;
+
+    const embedCode = embedCodeMatch[1]
+      .replace(/\\'/g, "'")
+      .replace(/\\"/g, '"');
 
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = widget.embed_code;
+    tempDiv.innerHTML = embedCode;
 
     // Extract and execute scripts
     const scripts = tempDiv.querySelectorAll("script");
@@ -32,19 +42,11 @@ const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget }) => {
     nonScriptContent.forEach((el) => {
       containerRef.current?.appendChild(el.cloneNode(true));
     });
-  }, [widget.embed_code]);
+  }, [widget.value]);
 
   return (
     <div className="widget-container">
-      {widget.name && (
-        <h3 className="text-2xl font-semibold text-theme-text mb-4">
-          {widget.name}
-        </h3>
-      )}
       <div ref={containerRef} className="w-full" />
-      {widget.notes && (
-        <p className="text-sm text-theme-neutral mt-4 italic">{widget.notes}</p>
-      )}
     </div>
   );
 };

@@ -1,21 +1,30 @@
 export interface WidgetPlaceholder {
   id: string;
-  name?: string;
-  embed_code: string;
-  notes?: string;
+  type: string;
+  value: string;
 }
 
 export interface PricingPageData {
   id: number;
   title: string;
-  heading: string;
-  description?: string;
+  content: {
+    heading: string;
+    description: string;
+  };
   widget_placeholders: WidgetPlaceholder[];
   header_config?: any;
   footer_config?: any;
-  color_theme?: any;
-  meta_title?: string;
-  meta_description?: string;
+  color_theme?: {
+    id: number;
+    name: string;
+    primary_color: string;
+    secondary_color: string;
+    accent_color: string;
+  };
+  meta?: {
+    meta_title?: string;
+    meta_description?: string;
+  };
 }
 
 const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";

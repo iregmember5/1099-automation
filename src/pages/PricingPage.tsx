@@ -22,13 +22,13 @@ const PricingPage: React.FC = () => {
         
         setData(pageData);
 
-        if (pageData.meta_title || pageData.title) {
-          document.title = pageData.meta_title || pageData.title;
+        if (pageData.meta?.meta_title || pageData.title) {
+          document.title = pageData.meta?.meta_title || pageData.title;
         }
 
         const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription && pageData.meta_description) {
-          metaDescription.setAttribute("content", pageData.meta_description);
+        if (metaDescription && pageData.meta?.meta_description) {
+          metaDescription.setAttribute("content", pageData.meta.meta_description);
         }
 
         setError(null);
@@ -96,16 +96,20 @@ const PricingPage: React.FC = () => {
 
       <div className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-theme-text mb-4">
-              {data.heading}
-            </h1>
-            {data.description && (
-              <p className="text-lg sm:text-xl text-theme-neutral max-w-3xl mx-auto">
-                {data.description}
-              </p>
-            )}
-          </div>
+          {(data.content.heading || data.content.description) && (
+            <div className="text-center mb-12 sm:mb-16">
+              {data.content.heading && (
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-theme-text mb-4">
+                  {data.content.heading}
+                </h1>
+              )}
+              {data.content.description && (
+                <p className="text-lg sm:text-xl text-theme-neutral max-w-3xl mx-auto">
+                  {data.content.description}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-12">
             {data.widget_placeholders.map((widget) => (
