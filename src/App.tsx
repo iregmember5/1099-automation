@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "react";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const FeaturesPage = lazy(() => import("../src/components/features/features-page/FeaturesPage").then(m => ({ default: m.FeaturesPage })));
+const PricingPage = lazy(() => import("./pages/PricingPage"));
 const DebugFeaturesAPI = lazy(() => import("./pages/DebugFeaturesApi"));
 const DebugLandingAPI = lazy(() => import("./pages/DebugLandingApi"));
 const ApiDebugger = lazy(() => import("./components/ApiDebugger"));
@@ -15,7 +16,7 @@ const Loader = () => (
 
 function App() {
   const [currentView, setCurrentView] = useState<{
-    type: "landing" | "features" | "debug-features" | "debug-landing" | "api-debug";
+    type: "landing" | "features" | "pricing" | "debug-features" | "debug-landing" | "api-debug";
     slug?: string;
   }>({ type: "landing" });
 
@@ -59,6 +60,8 @@ function App() {
         } else {
           setCurrentView({ type: "features", slug: "sales-marketing" });
         }
+      } else if (path.includes("/pricing") || hash.includes("#pricing")) {
+        setCurrentView({ type: "pricing" });
       } else {
         setCurrentView({ type: "landing" });
       }
@@ -79,6 +82,7 @@ function App() {
   return (
     <Suspense fallback={<Loader />}>
       {currentView.type === "features" && <FeaturesPage slug={currentView.slug} />}
+      {currentView.type === "pricing" && <PricingPage />}
       {currentView.type === "debug-features" && <DebugFeaturesAPI />}
       {currentView.type === "debug-landing" && <DebugLandingAPI />}
       {currentView.type === "api-debug" && <ApiDebugger />}
