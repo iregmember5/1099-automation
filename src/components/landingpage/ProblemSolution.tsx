@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import EasyIcon from "./IconRenderer";
 
-const API_BASE_URL = "https://esign-admin.signmary.com";
+const API_BASE_URL = "https://mypowerly.com";
 
 const getFullImageUrl = (url: string): string => {
   if (!url) return "";

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import type { DynamicContentBlock } from "../../types/landing";
 import EasyIcon from "./IconRenderer"; // Add this import
 
-const API_BASE_URL = "https://esign-admin.signmary.com";
+const API_BASE_URL = "https://mypowerly.com";
 
 const extractYouTubeId = (url: string): string => {
   if (!url) return "";

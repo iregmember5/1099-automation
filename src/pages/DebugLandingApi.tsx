@@ -64,7 +64,7 @@ const DebugLandingAPI = () => {
 
         const baseApiUrl = isDevelopment
           ? "/blogs/api/v2"
-          : "https://esign-admin.signmary.com/blogs/api/v2";
+          : "https://mypowerly.com/v1/blogs/api/v2";
 
         const response = await fetch(`${baseApiUrl}/mypages/`, {
           method: "GET",

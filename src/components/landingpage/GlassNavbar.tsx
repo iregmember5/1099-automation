@@ -118,7 +118,7 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
   const getFullImageUrl = (url: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
-    return `https://esign-admin.signmary.com${url}`;
+    return `https://mypowerly.com${url}`;
   };
 
   const logo = headerConfig?.logo;

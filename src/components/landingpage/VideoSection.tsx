@@ -34,7 +34,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ data }) => {
     return video.video_url;
   };
 
-  const backendBaseUrl = "https://esign-admin.signmary.com";
+  const backendBaseUrl = "https://mypowerly.com";
 
   // Automatically play YouTube or Vimeo videos
   useEffect(() => {

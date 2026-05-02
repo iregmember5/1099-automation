@@ -160,7 +160,7 @@ const CardSections: React.FC<CardSectionsProps> = ({ data }) => {
                     {card.card_image ? (
                       <div className="absolute inset-0">
                         <img
-                          src={`https://esign-admin.signmary.com${card.card_image.url}`}
+                          src={`https://mypowerly.com${card.card_image.url}`}
                           alt={card.card_image.title || title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />

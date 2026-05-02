@@ -6,5 +6,5 @@ export const getFullImageUrl = (
   const urlString = typeof url === "string" ? url : url.url;
 
   if (urlString.startsWith("http")) return urlString;
-  return `https://esign-admin.signmary.com${urlString}`;
+  return `https://mypowerly.com${urlString}`;
 };
