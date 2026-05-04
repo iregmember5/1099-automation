@@ -295,6 +295,27 @@ export interface LandingPageData {
   how_it_works_section?: HowItWorksSection;
   pricing_section?: PricingSection;
   section_order?: string[];
+  web_form_section?: {
+    heading: string;
+    description: string;
+    form: {
+      id: number;
+      name: string;
+      form_title: string;
+      form_description: string;
+      success_message: string;
+      button_text: string;
+      fields: Array<{
+        id: number;
+        label: string;
+        field_type: string;
+        placeholder: string;
+        required: boolean;
+        choices: string[];
+        order: number;
+      }>;
+    };
+  };
 }
 
 // ===== NEW: FeaturesPage Interface =====
