@@ -129,47 +129,11 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
   const transparentOnHome = headerConfig?.transparent_on_home || false;
 
   function getNavigationItemUrl(item: any): string {
-    const title = item.title?.toLowerCase() || "";
-    
-    // Home navigation
-    if (title === "home") {
-      return "/";
-    }
-    
-    // Contact navigation -> CTA section
-    if (title === "contact") {
-      return "#cta";
-    }
-    
-    // Pricing or Comparison navigation
-    if (title === "pricing" || title === "comparison") {
-      return "#pricing";
-    }
-    
-    // Features navigation - handled separately in dropdown logic
-    if (title === "features" || title.includes("feature")) {
-      return "#features";
-    }
-    
-    if (item.link_type === "page" && !item.url) {
-      return "#";
-    }
     return item.url || "#";
   }
 
-  function isFeatureDropdown(item: NavigationItem): boolean {
-    return (
-      item.link_type === "dropdown" &&
-      (item.title.toLowerCase().includes("feature") ||
-        item.title.toLowerCase() === "features")
-    );
-  }
-
-  function hasDropdownChildren(item: NavigationItem): boolean {
-    return (
-      item.link_type === "dropdown" ||
-      Boolean(item.children && item.children.length > 0)
-    );
+  function isDropdown(item: NavigationItem): boolean {
+    return item.link_type === "dropdown";
   }
 
   const getNavbarStyleClass = () => {
@@ -238,99 +202,10 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
                 .sort((a, b) => a.order - b.order)
                 .map((link) => (
                   <div key={link.id} className="relative">
-                    {isFeatureDropdown(link) ? (
-                      featuresPages.length > 0 ? (
-                        <div
-                          className="relative h-full"
-                          onMouseEnter={() => setActiveDropdown(link.id)}
-                          onMouseLeave={() => {
-                            setActiveDropdown(null);
-                          }}
-                        >
-                          <div className="h-full flex items-center">
-                            <button className="flex items-center gap-1 text-sm font-semibold transition-all duration-300 hover:scale-105 relative group py-2 text-theme-text">
-                              {link.title}
-                              <ChevronDown
-                                size={16}
-                                className={`transition-transform duration-300 ${
-                                  activeDropdown === link.id ? "rotate-180" : ""
-                                }`}
-                              />
-                              <span className="absolute -bottom-1 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 rounded-full gradient-theme-primary" />
-                            </button>
-                          </div>
-
-                          {/* Features Pages Dropdown - Connected to button with padding */}
-
-                          {activeDropdown === link.id && (
-                            <div
-                              className="absolute top-full left-1/2 mt-2 w-[650px] bg-white backdrop-blur-xl border border-gray-200 rounded-2xl shadow-2xl z-50"
-                              style={{
-                                transform: "translateX(-50%)",
-                                opacity: 1,
-                                animation:
-                                  "dropdownFadeIn 0.2s ease-out forwards",
-                              }}
-                            >
-                              {/* Drop shadow hover area */}
-                              <div
-                                className="absolute -top-2 left-0 right-0 h-2"
-                                onMouseEnter={() => setActiveDropdown(link.id)}
-                              />
-
-                              {/* Dropdown Header */}
-                              <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-bold text-lg text-theme-primary">
-                                  Features
-                                </h3>
-                                <p className="text-sm text-gray-600 mt-1">
-                                  Everything you need to grow your business
-                                </p>
-                              </div>
-
-                              {/* Features Grid */}
-                              <div className="p-6 grid grid-cols-3 gap-5">
-                                {featuresPages.map((page, index) => (
-                                  <a
-                                    key={page.id}
-                                    href={`/#features/${page.slug}`}
-                                    className="flex items-start gap-3 p-2 rounded-xl hover:bg-gray-100 transition-all group"
-                                    onClick={() => setActiveDropdown(null)}
-                                  >
-                                    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-xl">
-                                      {index === 0 && "📧"}
-                                      {index === 1 && "👥"}
-                                      {index === 2 && "📊"}
-                                      {index === 3 && "📋"}
-                                      {index === 4 && "💬"}
-                                      {index === 5 && "🔒"}
-                                    </div>
-
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium text-sm leading-tight group-hover:text-blue-600 text-theme-text">
-                                        {page.title}
-                                      </h4>
-                                    </div>
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        // No child pages - navigate to #features section
-                        <a
-                          href="#features"
-                          className="text-sm font-semibold transition-all duration-300 hover:scale-105 relative group py-2 inline-block text-theme-text"
-                        >
-                          {link.title}
-                          <span className="absolute -bottom-1 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 rounded-full gradient-theme-primary" />
-                        </a>
-                      )
-                    ) : hasDropdownChildren(link) ? (
-                      // Regular dropdown
+                    {isDropdown(link) ? (
+                      // Dropdown — children from Wagtail, or fallback to featuresPages
                       <div
-                        className="relative h-full flex items-center justify-center"
+                        className="relative h-full"
                         onMouseEnter={() => setActiveDropdown(link.id)}
                         onMouseLeave={() => setActiveDropdown(null)}
                       >
@@ -347,31 +222,35 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
                           </button>
                         </div>
 
-                        {activeDropdown === link.id &&
-                          link.children &&
-                          link.children.length > 0 && (
-                            <div className="absolute top-full left-0 mt-0 w-48 backdrop-blur-md bg-white/95 border rounded-xl shadow-lg py-2 z-50 border-theme-primary/30 shadow-2xl">
-                              {/* Invisible hover area above dropdown */}
+                        {activeDropdown === link.id && (() => {
+                          const dropdownItems: { id: number | string; title: string; href: string }[] =
+                            link.children && link.children.length > 0
+                              ? link.children.map((c) => ({ id: c.id, title: c.title, href: getNavigationItemUrl(c) }))
+                              : featuresPages.map((p) => ({ id: p.id, title: p.title, href: `/features/${p.slug}` }));
+
+                          return dropdownItems.length > 0 ? (
+                            <div className="absolute top-full left-0 mt-0 w-48 backdrop-blur-md bg-white/95 border rounded-xl shadow-2xl py-2 z-50 border-theme-primary/30">
                               <div
                                 className="absolute -top-4 left-0 right-0 h-4 bg-transparent"
                                 onMouseEnter={() => setActiveDropdown(link.id)}
                               />
-
-                              {link.children.map((child) => (
+                              {dropdownItems.map((item) => (
                                 <a
-                                  key={child.id}
-                                  href={getNavigationItemUrl(child)}
+                                  key={item.id}
+                                  href={item.href}
                                   className="block px-4 py-2 text-sm transition-all duration-200 hover:scale-105 relative group text-theme-text"
+                                  onClick={() => setActiveDropdown(null)}
                                 >
-                                  {child.title}
+                                  {item.title}
                                   <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 gradient-theme-primary" />
                                 </a>
                               ))}
                             </div>
-                          )}
+                          ) : null;
+                        })()}
                       </div>
                     ) : (
-                      // Regular link
+                      // Regular single-click link
                       <a
                         href={getNavigationItemUrl(link)}
                         className="text-sm font-semibold transition-all duration-300 hover:scale-105 relative group py-2 inline-block text-theme-text"
@@ -431,95 +310,43 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
               .sort((a, b) => a.order - b.order)
               .map((link) => (
                 <div key={link.id}>
-                  {isFeatureDropdown(link) ? (
-                    featuresPages.length > 0 ? (
-                      <div>
-                        <button
-                          onClick={() =>
-                            setActiveDropdown(
-                              activeDropdown === link.id ? null : link.id
-                            )
-                          }
-                          className="w-full flex items-center justify-between text-base font-semibold py-2 px-2 transition-all duration-300 hover:scale-105 relative text-theme-text"
-                        >
-                          {link.title}
-                          <ChevronDown
-                            size={16}
-                            className={`transform transition-transform duration-300 ${
-                              activeDropdown === link.id ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-                        {activeDropdown === link.id && (
-                          <div className="ml-4 mt-2 space-y-1 max-h-64 overflow-y-auto">
-                            {featuresPages.map((page) => (
-                              <a
-                                key={page.id}
-                                href={`/features/${page.slug}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block text-sm py-2 px-3 rounded-lg transition-all duration-200 relative overflow-hidden group text-theme-text"
-                                onClick={() => setOpen(false)}
-                              >
-                                <div className="relative z-10 flex items-center gap-2">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-theme-primary" />
-                                  {page.title}
-                                </div>
-                                <div
-                                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                  style={{
-                                    background: `linear-gradient(90deg, var(--color-primary)10 0%, var(--color-accent)10 100%)`,
-                                  }}
-                                />
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      // No child pages - navigate to #features section
-                      <a
-                        href="#features"
-                        className="block text-base font-medium py-2 px-2 rounded transition hover:text-blue-600 text-theme-text"
-                        onClick={() => setOpen(false)}
-                      >
-                        {link.title}
-                      </a>
-                    )
-                  ) : hasDropdownChildren(link) ? (
+                  {isDropdown(link) ? (
                     <div>
                       <button
                         onClick={() =>
-                          setActiveDropdown(
-                            activeDropdown === link.id ? null : link.id
-                          )
+                          setActiveDropdown(activeDropdown === link.id ? null : link.id)
                         }
-                        className="w-full flex items-center justify-between text-base font-medium py-2 px-2 hover:text-blue-600 transition-colors text-theme-text"
+                        className="w-full flex items-center justify-between text-base font-semibold py-2 px-2 transition-all duration-300 hover:scale-105 relative text-theme-text"
                       >
                         {link.title}
                         <ChevronDown
                           size={16}
-                          className={`transform transition-transform ${
+                          className={`transform transition-transform duration-300 ${
                             activeDropdown === link.id ? "rotate-180" : ""
                           }`}
                         />
                       </button>
-                      {activeDropdown === link.id &&
-                        link.children &&
-                        link.children.length > 0 && (
-                          <div className="ml-4 mt-2 space-y-2">
-                            {link.children.map((child) => (
+                      {activeDropdown === link.id && (() => {
+                        const dropdownItems: { id: number | string; title: string; href: string }[] =
+                          link.children && link.children.length > 0
+                            ? link.children.map((c) => ({ id: c.id, title: c.title, href: getNavigationItemUrl(c) }))
+                            : featuresPages.map((p) => ({ id: p.id, title: p.title, href: `/features/${p.slug}` }));
+
+                        return dropdownItems.length > 0 ? (
+                          <div className="ml-4 mt-2 space-y-1 max-h-64 overflow-y-auto">
+                            {dropdownItems.map((item) => (
                               <a
-                                key={child.id}
-                                href={getNavigationItemUrl(child)}
-                                className="block text-sm py-2 px-2 rounded transition hover:bg-blue-50 hover:text-blue-600 text-theme-text"
+                                key={item.id}
+                                href={item.href}
+                                className="block text-sm py-2 px-3 rounded-lg transition-all duration-200 relative group text-theme-text hover:text-blue-600"
                                 onClick={() => setOpen(false)}
                               >
-                                {child.title}
+                                {item.title}
                               </a>
                             ))}
                           </div>
-                        )}
+                        ) : null;
+                      })()}
                     </div>
                   ) : (
                     <a
