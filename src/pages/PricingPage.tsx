@@ -4,7 +4,11 @@ import { fetchPricingPageData } from "../types/pricing";
 import { useTheme } from "../contexts/ThemeContext";
 import WidgetRenderer from "../components/pricing/WidgetRenderer";
 
-const PricingPage: React.FC = () => {
+interface PricingPageProps {
+  slug?: string;
+}
+
+const PricingPage: React.FC<PricingPageProps> = ({ slug }) => {
   const [data, setData] = useState<PricingPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +18,7 @@ const PricingPage: React.FC = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const pageData = await fetchPricingPageData();
+        const pageData = await fetchPricingPageData(slug);
         
         if (pageData.color_theme) {
           setTheme(pageData.color_theme);
@@ -41,7 +45,7 @@ const PricingPage: React.FC = () => {
     };
 
     loadData();
-  }, [setTheme]);
+  }, [setTheme, slug]);
 
   if (loading) {
     return (

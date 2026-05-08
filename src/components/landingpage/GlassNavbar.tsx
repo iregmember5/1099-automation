@@ -129,6 +129,10 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
   const transparentOnHome = headerConfig?.transparent_on_home || false;
 
   function getNavigationItemUrl(item: any): string {
+    // Special handling for Supported Platforms
+    if (item.title === "Supported Platforms" && (!item.url || item.url === "")) {
+      return "/supported-platforms";
+    }
     return item.url || "#";
   }
 

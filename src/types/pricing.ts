@@ -30,7 +30,7 @@ export interface PricingPageData {
 const baseApiUrl = "https://mypowerly.com/v1/blogs/api/v2";
 const frontendUrl = "https://1099automation.com";
 
-export const fetchPricingPageData = async (): Promise<PricingPageData> => {
+export const fetchPricingPageData = async (slug?: string): Promise<PricingPageData> => {
   const response = await fetch(`${baseApiUrl}/pricing-pages/`, {
     method: "GET",
     headers: {
@@ -47,6 +47,15 @@ export const fetchPricingPageData = async (): Promise<PricingPageData> => {
   
   if (!data.items || data.items.length === 0) {
     throw new Error("No pricing page found for this domain");
+  }
+
+  // If slug provided, find matching page
+  if (slug) {
+    const page = data.items.find((item: any) => item.slug === slug);
+    if (!page) {
+      throw new Error(`Pricing page with slug "${slug}" not found`);
+    }
+    return page;
   }
 
   return data.items[0];
